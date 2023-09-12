@@ -56,9 +56,7 @@
 #include "msg.ch"
 #define HB_FALSE 0
 #define HB_TRUE 1
-#ifndef __XHARBOUR__
-   REQUEST XHB_LIB
-#endif
+REQUEST XHB_LIB
 REQUEST HB_Deserialize
 REQUEST HB_Serialize
 #define DEMO_NOTICE    "54686973206170706C69636174696F6E20776173206275696C64207769746820612064656D6F206F662053514C5244442C2064697374726962757465642062792078486172626F75722E636F6D2E0D0A0D0A457374612061706C69636163616F20E920666569746120636F6D20756D612076657273616F2044454D4F4E5354524143414F20646F2053514C5244442C2065207365752075736F20E9207065726D697469646F204150454E415320504152412046494E53204445204156414C4941C7C34F2E204120646973747269627569E7E36F20656D2070726F6475E7E36F2064657374612061706C696361E7E36F20E92070726F696269646120652073756A6569746120E0732070656E616C6964616465732070726576697374617320656D206C65692E204D61697320696E666F726D61E7F5657320656D207777772E78686172626F75722E636F6D2E62722E0D0A"
@@ -2241,8 +2239,9 @@ HB_BOOL HB_EXPORT sr_isMultilang(void)
 HB_FUNC( SR_SETMULTILANG )
 {
    hb_retl(s_fMultiLang);
-   if( HB_ISLOG(1) )
+   if( HB_ISLOG(1) ) {
       s_fMultiLang = hb_parl(1);
+   }
 }
 
 HB_BOOL HB_EXPORT sr_isShutdownProcess(void)
@@ -2253,8 +2252,9 @@ HB_BOOL HB_EXPORT sr_isShutdownProcess(void)
 HB_FUNC( SR_SETSHUTDOWN )
 {
    hb_retl(s_fShutDown);
-   if( HB_ISLOG(1) )
+   if( HB_ISLOG(1) ) {
       s_fShutDown = hb_parl(1);
+   }
 }
 
 HB_BOOL HB_EXPORT sr_GoTopOnScope(void)
@@ -2265,8 +2265,9 @@ HB_BOOL HB_EXPORT sr_GoTopOnScope(void)
 HB_FUNC( SR_SETGOTOPONSCOPE )
 {
    hb_retl(s_fGoTopOnScope);
-   if( HB_ISLOG(1) )
+   if( HB_ISLOG(1) ) {
       s_fGoTopOnScope = hb_parl(1);
+   }
 }
 
 HB_BOOL HB_EXPORT sr_lSerializedAsString(void)
@@ -2277,8 +2278,9 @@ HB_BOOL HB_EXPORT sr_lSerializedAsString(void)
 HB_FUNC( SR_SETSERIALIZEDSTRING )
 {
    hb_retl(s_fSerializedAsString);
-   if( HB_ISLOG(1) )
+   if( HB_ISLOG(1) ) {
       s_fSerializedAsString = hb_parl(1);
+   }
 }
 
 HB_BOOL HB_EXPORT sr_lHideRecno(void)
@@ -2289,8 +2291,9 @@ HB_BOOL HB_EXPORT sr_lHideRecno(void)
 HB_FUNC( SR_SETHIDERECNO )
 {
    hb_retl(s_fHideRecno);
-   if( HB_ISLOG(1) )
+   if( HB_ISLOG(1) ) {
       s_fHideRecno = hb_parl(1);
+   }
 }
 
 HB_BOOL HB_EXPORT sr_lHideHistoric(void)
@@ -2301,8 +2304,9 @@ HB_BOOL HB_EXPORT sr_lHideHistoric(void)
 HB_FUNC( SR_SETHIDEHISTORIC )
 {
    hb_retl(s_fHideHistoric);
-   if( HB_ISLOG(1) )
+   if( HB_ISLOG(1) ) {
       s_fHideHistoric = hb_parl(1);
+   }
 }
 
 HB_BOOL HB_EXPORT sr_UseDeleteds(void)
@@ -2313,8 +2317,9 @@ HB_BOOL HB_EXPORT sr_UseDeleteds(void)
 HB_FUNC( SR_USEDELETEDS )
 {
    hb_retl(s_fUseDeleteds);
-   if( HB_ISLOG(1) )
+   if( HB_ISLOG(1) ) {
       s_fUseDeleteds = hb_parl(1);
+   }
 }
 
 HB_BOOL HB_EXPORT sr_lSerializeArrayAsJson(void)
@@ -2325,18 +2330,19 @@ HB_BOOL HB_EXPORT sr_lSerializeArrayAsJson(void)
 HB_FUNC( SR_SETSERIALIZEARRAYASJSON )
 {
    hb_retl(s_fSerializeArrayAsJson);
-   if( HB_ISLOG(1) )
+   if( HB_ISLOG(1) ) {
       s_fSerializeArrayAsJson = hb_parl(1);
+   }
 }
 
-BOOL HB_EXPORT sr_lsql2008newTypes(void)
+HB_BOOL HB_EXPORT sr_lsql2008newTypes(void)
 {
    return s_fSql2008newTypes;
 }
 
-BOOL HB_EXPORT sr_iOldPgsBehavior(void)
+HB_BOOL HB_EXPORT sr_iOldPgsBehavior(void)
 {
-   return s_iOldPgsBehavior ;
+   return s_iOldPgsBehavior;
 }
 
 HB_FUNC( SR_GETSQL2008NEWTYPES )
@@ -2347,31 +2353,35 @@ HB_FUNC( SR_GETSQL2008NEWTYPES )
 HB_FUNC( SR_SETSQL2008NEWTYPES )
 {
    hb_retl(s_fSql2008newTypes);
-   if( HB_ISLOG(1) )
+   if( HB_ISLOG(1) ) {
       s_fSql2008newTypes = hb_parl(1);
+   }
 }
 
-HB_FUNC(SETPGSOLDBEHAVIOR)
+HB_FUNC( SETPGSOLDBEHAVIOR )
 {
    int iOld = s_iOldPgsBehavior;
-   if (ISLOG(1) )
-       s_iOldPgsBehavior= hb_parl(1) ;
-    hb_retl(iOld) ;
+   if( HB_ISLOG(1) ) {
+      s_iOldPgsBehavior = hb_parl(1);
+   }
+   hb_retl(iOld);
 }
 
 
-BOOL HB_EXPORT  sr_fShortasNum(void)
+HB_BOOL HB_EXPORT sr_fShortasNum(void)
 {
-return s_fShortasNum;
+   return s_fShortasNum;
 }
-HB_FUNC(SETFIREBIRDUSESHORTASNUM)
+
+HB_FUNC( SETFIREBIRDUSESHORTASNUM )
 {
    int iOld = s_fShortasNum;
-   if (ISLOG(1) )
-       s_fShortasNum= hb_parl(1) ;
-    hb_retl(iOld) ;
-
+   if( HB_ISLOG(1) ) {
+      s_fShortasNum = hb_parl(1);
+   }
+   hb_retl(iOld);
 }
+
 #pragma ENDDUMP
 
 /*------------------------------------------------------------------------*/

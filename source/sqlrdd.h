@@ -76,15 +76,15 @@ typedef struct _SQLAREA
    */
    PHB_CODEPAGE cdPageCnv; /* Area's codepage convert pointer */
    char * szDataFileName;  /* file name */
-   LONG hOrdCurrent;       /* current index order */
-   BOOL shared;
-   BOOL readonly;          /* only SELECT allowed */
-   BOOL creating;          /* TRUE when creating table */
-   BOOL firstinteract;     /* TRUE when workarea was not used yet */
-   BOOL isam;              /* ISAM Simulator ? */
-   BOOL wasdel;
-   BOOL initialized;       /* Workarea Initialization done */
-   BOOL sqlfilter;         /* SET FILTER converted to SQL */
+   HB_LONG hOrdCurrent;       /* current index order */
+   HB_BOOL shared;
+   HB_BOOL readonly;          /* only SELECT allowed */
+   HB_BOOL creating;          /* HB_TRUE when creating table */
+   HB_BOOL firstinteract;     /* HB_TRUE when workarea was not used yet */
+   HB_BOOL isam;              /* ISAM Simulator ? */
+   HB_BOOL wasdel;
+   HB_BOOL initialized;       /* Workarea Initialization done */
+   HB_BOOL sqlfilter;         /* SET FILTER converted to SQL */
 
    PHB_ITEM oWorkArea;      /* SQL Workarea object */
    PHB_ITEM aInfo;          /* Status array */
@@ -118,6 +118,6 @@ typedef SQLAREA * LPSQLAREA;
 
 /* prototypes */
 
-void commonError( AREAP ThisDb, USHORT uiGenCode, USHORT uiSubCode, char* filename );
+void commonError( AREAP ThisDb, HB_USHORT uiGenCode, HB_USHORT uiSubCode, char* filename );
 
 #endif
