@@ -1,20 +1,20 @@
 // SQLRDD
-// test with MySQL
+// test with Firebird 3
 // To compile:
-// hbmk2 mysql1 -llibmysql
+// hbmk2 firebird1 -lfbclient
 
 #include "sqlrdd.ch"
 
 // Make a copy of this file and change the values below.
 // NOTE: the database must exist before runnning the test.
-#define SERVER "localhost"
-#define UID    "root"
-#define PWD    "password"
-#define DTB    "dbtest"
+#define SERVER "inet://"
+#define UID    "SYSDBA"
+#define PWD    "masterkey"
+#define DTB    "C:\PATHTODATABASE\TEST.FDB"
 
 REQUEST SQLRDD
 REQUEST SQLEX
-REQUEST SR_MYSQL
+REQUEST SR_FIREBIRD3
 
 PROCEDURE Main()
 
@@ -25,7 +25,7 @@ PROCEDURE Main()
 
    rddSetDefault("SQLRDD")
 
-   nConnection := sr_AddConnection(CONNECT_MYSQL, "MySQL=" + SERVER + ";UID=" + UID + ";PWD=" + PWD + ";DTB=" + DTB)
+   nConnection := sr_AddConnection(CONNECT_FIREBIRD3, "FIREBIRD=" + SERVER + ";UID=" + UID + ";PWD=" + PWD + ";DTB=" + DTB)
 
    IF nConnection < 0
       alert("Connection error. See sqlerror.log for details.")

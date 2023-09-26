@@ -102,8 +102,8 @@ HB_FUNC( MYSCONNECT )
    const char * szUser = hb_parc(2);
    const char * szPass = hb_parc(3);
    const char * szDb = hb_parc(4);
-   UINT uiPort = HB_ISNUM(5) ? hb_parnl(5) : MYSQL_PORT;
-   UINT uiTimeout = HB_ISNUM(7) ? hb_parnl(7) : 3600;
+   HB_UINT uiPort = HB_ISNUM(5) ? hb_parnl(5) : MYSQL_PORT;
+   HB_UINT uiTimeout = HB_ISNUM(7) ? hb_parnl(7) : 3600;
    HB_BOOL lCompress = HB_ISLOG(8) ? hb_parl(8) : HB_FALSE;
    mysql_library_init(0, NULL, NULL);
 //    memset(session, 0, sizeof(MYSQL_SESSION));
@@ -150,7 +150,7 @@ HB_FUNC( MYSGETCONNID )
 {
    PMYSQL_SESSION session = ( PMYSQL_SESSION ) hb_itemGetPtr(hb_param(1, HB_IT_POINTER));
 
-   ULONG ulThreadID;
+   HB_ULONG ulThreadID;
 
    assert(session != NULL);
    assert(session->dbh != NULL);
@@ -161,7 +161,7 @@ HB_FUNC( MYSGETCONNID )
 HB_FUNC( MYSKILLCONNID )
 {
    PMYSQL_SESSION session = ( PMYSQL_SESSION ) hb_itemGetPtr(hb_param(1, HB_IT_POINTER));
-   ULONG ulThreadID = (ULONG) hb_itemGetNL(hb_param(2, HB_IT_LONG));
+   HB_ULONG ulThreadID = (HB_ULONG) hb_itemGetNL(hb_param(2, HB_IT_LONG));
 
    assert(session != NULL);
    assert(session->dbh != NULL);
@@ -221,16 +221,16 @@ HB_FUNC( MYSFETCH )     /* MYSFetch(ConnHandle, ResultSet) => nStatus */
 
 //-----------------------------------------------------------------------------//
 
-void MSQLFieldGet(PHB_ITEM pField, PHB_ITEM pItem, char * bBuffer, HB_SIZE lLenBuff, HB_BOOL bQueryOnly, ULONG ulSystemID, HB_BOOL bTranslate)
+void MSQLFieldGet(PHB_ITEM pField, PHB_ITEM pItem, char * bBuffer, HB_SIZE lLenBuff, HB_BOOL bQueryOnly, HB_ULONG ulSystemID, HB_BOOL bTranslate)
 {
-   LONG lType;
+   HB_LONG lType;
    HB_SIZE lLen, lDec;
    PHB_ITEM pTemp;
 
    HB_SYMBOL_UNUSED(bQueryOnly);
    HB_SYMBOL_UNUSED(ulSystemID);
 
-   lType = (LONG) hb_arrayGetNL(pField, FIELD_DOMAIN);
+   lType = (HB_LONG) hb_arrayGetNL(pField, FIELD_DOMAIN);
    lLen = hb_arrayGetNL(pField, FIELD_LEN);
    lDec = hb_arrayGetNL(pField, FIELD_DEC);
 
@@ -402,12 +402,12 @@ HB_FUNC( MYSLINEPROCESSED )
    int col, cols;
    PHB_ITEM temp;
    MYSQL_ROW thisrow;
-   ULONG * lens;
-   LONG lIndex;
+   HB_ULONG * lens;
+   HB_LONG lIndex;
 
    PHB_ITEM pFields = hb_param(3, HB_IT_ARRAY);
    HB_BOOL bQueryOnly = hb_parl(4);
-   ULONG ulSystemID = hb_parnl(5);
+   HB_ULONG ulSystemID = hb_parnl(5);
    HB_BOOL bTranslate = hb_parl(6);
    PHB_ITEM pRet = hb_param(7, HB_IT_ARRAY);
 
@@ -468,13 +468,13 @@ HB_FUNC( MYSSTATUS )
 
 HB_FUNC( MYSRESULTSTATUS )
 {
-   UINT ret;
+   HB_UINT ret;
    PMYSQL_SESSION session = (PMYSQL_SESSION) hb_itemGetPtr(hb_param(1, HB_IT_POINTER));
 
    assert(session != NULL);
    assert(session->dbh != NULL);
 
-   ret = (UINT) mysql_errno(session->dbh);
+   ret = (HB_UINT) mysql_errno(session->dbh);
 
    switch (ret) {
    case MYSQL_OK:
@@ -485,10 +485,10 @@ HB_FUNC( MYSRESULTSTATUS )
    case CR_SERVER_GONE_ERROR:
    case CR_SERVER_LOST:
    case ER_NO_DB_ERROR:
-      ret = (UINT)SQL_ERROR;
+      ret = (HB_UINT)SQL_ERROR;
       break;
    }
-   hb_retnl((LONG) ret);
+   hb_retnl((HB_LONG) ret);
 }
 
 HB_FUNC( MYSRESSTATUS )

@@ -1,20 +1,19 @@
 // SQLRDD
-// test with MySQL
+// test with PostgreSQL
 // To compile:
-// hbmk2 mysql1 -llibmysql
+// hbmk2 pgsql1 -llibpq
 
 #include "sqlrdd.ch"
 
 // Make a copy of this file and change the values below.
 // NOTE: the database must exist before runnning the test.
 #define SERVER "localhost"
-#define UID    "root"
+#define UID    "postgres"
 #define PWD    "password"
 #define DTB    "dbtest"
 
 REQUEST SQLRDD
-REQUEST SQLEX
-REQUEST SR_MYSQL
+REQUEST SR_PGS
 
 PROCEDURE Main()
 
@@ -25,7 +24,7 @@ PROCEDURE Main()
 
    rddSetDefault("SQLRDD")
 
-   nConnection := sr_AddConnection(CONNECT_MYSQL, "MySQL=" + SERVER + ";UID=" + UID + ";PWD=" + PWD + ";DTB=" + DTB)
+   nConnection := sr_AddConnection(CONNECT_POSTGRES, "PGS=" + SERVER + ";UID=" + UID + ";PWD=" + PWD + ";DTB=" + DTB)
 
    IF nConnection < 0
       alert("Connection error. See sqlerror.log for details.")

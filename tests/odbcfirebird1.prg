@@ -1,20 +1,25 @@
 // SQLRDD
-// test with MySQL
+// test with ODBC/Firebird
 // To compile:
-// hbmk2 mysql1 -llibmysql
+// hbmk2 odbcfirebird1
 
 #include "sqlrdd.ch"
 
 // Make a copy of this file and change the values below.
 // NOTE: the database must exist before runnning the test.
-#define SERVER "localhost"
-#define UID    "root"
-#define PWD    "password"
-#define DTB    "dbtest"
+#define ODBC_DRIVER   "Firebird/InterBase(r) driver"
+#define ODBC_SERVER   "localhost"
+#define ODBC_PORT     "3050"
+#define ODBC_UID      "SYSDBA"
+#define ODBC_PWD      "masterkey"
+#define ODBC_DATABASE "C:\PATHTODATABASE\TEST.FDB"
+#define ODBC_CLIENT   "fbclient.dll"
+#define ODBC_CHARSET  "ISO8859_1"
 
-REQUEST SQLRDD
+//REQUEST SQLRDD
 REQUEST SQLEX
-REQUEST SR_MYSQL
+REQUEST SR_ODBC
+//REQUEST SR_FIREBIRD3
 
 PROCEDURE Main()
 
@@ -25,7 +30,15 @@ PROCEDURE Main()
 
    rddSetDefault("SQLRDD")
 
-   nConnection := sr_AddConnection(CONNECT_MYSQL, "MySQL=" + SERVER + ";UID=" + UID + ";PWD=" + PWD + ";DTB=" + DTB)
+   nConnection := sr_AddConnection(CONNECT_ODBC, ;
+      "driver="   + ODBC_DRIVER   + ";" + ;
+      "server="   + ODBC_SERVER   + ";" + ;
+      "port="     + ODBC_PORT     + ";" + ;
+      "uid="      + ODBC_UID      + ";" + ;
+      "pwd="      + ODBC_PWD      + ";" + ;
+      "database=" + ODBC_DATABASE + ";" + ;
+      "client="   + ODBC_CLIENT   + ";" + ;
+      "charset="  + ODBC_CHARSET  + ";")
 
    IF nConnection < 0
       alert("Connection error. See sqlerror.log for details.")

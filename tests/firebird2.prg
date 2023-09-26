@@ -1,31 +1,34 @@
 // SQLRDD
-// test with MySQL
+// test with Firebird 3
 // To compile:
-// hbmk2 mysql1 -llibmysql
+// hbmk2 firebird2 -lfbclient
 
 #include "sqlrdd.ch"
+#include "inkey.ch"
 
 // Make a copy of this file and change the values below.
 // NOTE: the database must exist before runnning the test.
-#define SERVER "localhost"
-#define UID    "root"
-#define PWD    "password"
-#define DTB    "dbtest"
+#define SERVER "inet://"
+#define UID    "SYSDBA"
+#define PWD    "masterkey"
+#define DTB    "C:\PATHTODATABASE\TEST.FDB"
 
 REQUEST SQLRDD
 REQUEST SQLEX
-REQUEST SR_MYSQL
+REQUEST SR_FIREBIRD3
 
 PROCEDURE Main()
 
    LOCAL nConnection
    LOCAL n
+   LOCAL oTB
+   LOCAL nKey
 
    setMode(25, 80)
 
    rddSetDefault("SQLRDD")
 
-   nConnection := sr_AddConnection(CONNECT_MYSQL, "MySQL=" + SERVER + ";UID=" + UID + ";PWD=" + PWD + ";DTB=" + DTB)
+   nConnection := sr_AddConnection(CONNECT_FIREBIRD3, "FIREBIRD=" + SERVER + ";UID=" + UID + ";PWD=" + PWD + ";DTB=" + DTB)
 
    IF nConnection < 0
       alert("Connection error. See sqlerror.log for details.")
@@ -61,7 +64,42 @@ PROCEDURE Main()
 
    GO TOP
 
-   browse()
+   oTB := TBrowseDB(0, 0, maxrow(), maxcol())
+
+   oTB:addColumn(TBColumnNew("ID", {||TEST->ID}))
+   oTB:addColumn(TBColumnNew("FIRST", {||TEST->FIRST}))
+   oTB:addColumn(TBColumnNew("LAST", {||TEST->LAST}))
+   oTB:addColumn(TBColumnNew("AGE", {||TEST->AGE}))
+   oTB:addColumn(TBColumnNew("DATE", {||TEST->DATE}))
+   oTB:addColumn(TBColumnNew("MARRIED", {||TEST->MARRIED}))
+   oTB:addColumn(TBColumnNew("VALUE", {||TEST->VALUE}))
+
+   DO WHILE nKey != K_ESC
+      dispbegin()
+      DO WHILE !oTB:stabilize()
+      ENDDO
+      dispend()
+      nKey := inkey(0)
+      SWITCH nKey
+      CASE K_UP
+         oTB:up()
+         EXIT
+      CASE K_DOWN
+         oTB:down()
+         EXIT
+      CASE K_LEFT
+         oTB:left()
+         EXIT
+      CASE K_RIGHT
+         oTB:right()
+         EXIT
+      CASE K_PGUP
+         oTB:PageUp()
+         EXIT
+      CASE K_PGDN
+         oTB:PageDown()
+      ENDSWITCH
+   ENDDO
 
    CLOSE DATABASE
    
