@@ -1,11 +1,8 @@
-/* $CATEGORY$HIDE$FILES$HIDE$
-* SQLRDD Support Classes
-* WorkArea abstract class
-* Copyright (c) 2003 - Marcelo Lombardo  <lombardo@uol.com.br>
-* All Rights Reserved
-*/
-
 /*
+ * SQLRDD Support Classes
+ * WorkArea abstract class
+ * Copyright (c) 2003 - Marcelo Lombardo  <lombardo@uol.com.br>
+ *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2, or (at your option)
@@ -6081,11 +6078,17 @@ METHOD sqlCreate(aStruct, cFileName, cAlias, nArea) CLASS SR_WORKAREA
             ENDIF
             EXIT
          CASE SYSTEMID_MYSQL
-         CASE SYSTEMID_MARIADB
             IF cField == ::cRecnoName
                cSql += "BIGINT (" + LTrim(Str(aCreate[i, FIELD_LEN], 9, 0)) + ") NOT NULL UNIQUE AUTO_INCREMENT "
             ELSE
                cSql += cMySqlNumericDataType + " (" + LTrim(Str(aCreate[i, FIELD_LEN], 9, 0)) + "," + LTrim(Str(aCreate[i, FIELD_DEC])) + ") " + IIF(lNotNull, " NOT NULL ", "")
+            ENDIF
+            EXIT
+         CASE SYSTEMID_MARIADB
+            IF cField == ::cRecnoName
+               cSql += "BIGINT (" + LTrim(Str(aCreate[i, FIELD_LEN], 9, 0)) + ") NOT NULL UNIQUE AUTO_INCREMENT "
+            ELSE
+               cSql += "DECIMAL (" + LTrim(Str(aCreate[i, FIELD_LEN], 9, 0)) + "," + LTrim(Str(aCreate[i, FIELD_DEC])) + ") " + IIF(lNotNull, " NOT NULL ", "")
             ENDIF
             EXIT
          CASE SYSTEMID_ORACLE
