@@ -1,70 +1,72 @@
-/*
- * SQLRDD Postgres Native Connection Class
- * Copyright (c) 2003 - Marcelo Lombardo  <lombardo@uol.com.br>
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2, or (at your option)
- * any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this software; see the file COPYING.  If not, write to
- * the Free Software Foundation, Inc., 59 Temple Place, Suite 330,
- * Boston, MA 02111-1307 USA (or visit the web site http://www.gnu.org/).
- *
- * As a special exception, the xHarbour Project gives permission for
- * additional uses of the text contained in its release of xHarbour.
- *
- * The exception is that, if you link the xHarbour libraries with other
- * files to produce an executable, this does not by itself cause the
- * resulting executable to be covered by the GNU General Public License.
- * Your use of that executable is in no way restricted on account of
- * linking the xHarbour library code into it.
- *
- * This exception does not however invalidate any other reasons why
- * the executable file might be covered by the GNU General Public License.
- *
- * This exception applies only to the code released by the xHarbour
- * Project under the name xHarbour.  If you copy code from other
- * xHarbour Project or Free Software Foundation releases into a copy of
- * xHarbour, as the General Public License permits, the exception does
- * not apply to the code that you add in this way.  To avoid misleading
- * anyone as to the status of such modified files, you must delete
- * this exception notice from them.
- *
- * If you write modifications of your own for xHarbour, it is your choice
- * whether to permit this exception to apply to your modifications.
- * If you do not wish that, delete this exception notice.
- *
- */
+//
+// SQLRDD Postgres Native Connection Class
+// Copyright (c) 2003 - Marcelo Lombardo  <lombardo@uol.com.br>
+//
 
-#include "hbclass.ch"
-#include "common.ch"
+// $BEGIN_LICENSE$
+// This program is free software; you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation; either version 2, or (at your option)
+// any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this software; see the file COPYING.  If not, write to
+// the Free Software Foundation, Inc., 59 Temple Place, Suite 330,
+// Boston, MA 02111-1307 USA (or visit the web site http://www.gnu.org/).
+//
+// As a special exception, the xHarbour Project gives permission for
+// additional uses of the text contained in its release of xHarbour.
+//
+// The exception is that, if you link the xHarbour libraries with other
+// files to produce an executable, this does not by itself cause the
+// resulting executable to be covered by the GNU General Public License.
+// Your use of that executable is in no way restricted on account of
+// linking the xHarbour library code into it.
+//
+// This exception does not however invalidate any other reasons why
+// the executable file might be covered by the GNU General Public License.
+//
+// This exception applies only to the code released by the xHarbour
+// Project under the name xHarbour.  If you copy code from other
+// xHarbour Project or Free Software Foundation releases into a copy of
+// xHarbour, as the General Public License permits, the exception does
+// not apply to the code that you add in this way.  To avoid misleading
+// anyone as to the status of such modified files, you must delete
+// this exception notice from them.
+//
+// If you write modifications of your own for xHarbour, it is your choice
+// whether to permit this exception to apply to your modifications.
+// If you do not wish that, delete this exception notice.
+// $END_LICENSE$
+
+#include <hbclass.ch>
+#include <common.ch>
 // #include "compat.ch"
 #include "sqlodbc.ch"
 #include "sqlrdd.ch"
-#include "error.ch"
+#include <error.ch>
 #include "msg.ch"
 #include "pgs.ch"
 #include "sqlrddsetup.ch"
 
-#define SR_CRLF   (chr(13) + chr(10))
+#define SR_CRLF   (Chr(13) + Chr(10))
 
-/*------------------------------------------------------------------------*/
+//-------------------------------------------------------------------------------------------------------------------//
 
 CLASS SR_PGS FROM SR_CONNECTION
 
    Data aCurrLine
 
-   METHOD ConnectRaw(cDSN, cUser, cPassword, nVersion, cOwner, nSizeMaxBuff, lTrace, cConnect, nPrefetch, cTargetDB, nSelMeth, nEmptyMode, nDateMode, lCounter, lAutoCommit)
+   METHOD ConnectRaw(cDSN, cUser, cPassword, nVersion, cOwner, nSizeMaxBuff, lTrace, cConnect, nPrefetch, cTargetDB, ;
+      nSelMeth, nEmptyMode, nDateMode, lCounter, lAutoCommit)
    METHOD End()
    METHOD LastError()
-   METHOD Commit()
+   METHOD Commit(lNoLog)
    METHOD RollBack()
    METHOD IniFields(lReSelect, cTable, cCommand, lLoadCache, cWhere, cRecnoName, cDeletedName)
    METHOD ExecuteRaw(cCommand)
@@ -78,7 +80,7 @@ CLASS SR_PGS FROM SR_CONNECTION
 
 ENDCLASS
 
-/*------------------------------------------------------------------------*/
+//-------------------------------------------------------------------------------------------------------------------//
 
 METHOD MoreResults(aArray, lTranslate) CLASS SR_PGS
 
@@ -87,7 +89,7 @@ METHOD MoreResults(aArray, lTranslate) CLASS SR_PGS
 
 RETURN -1
 
-/*------------------------------------------------------------------------*/
+//-------------------------------------------------------------------------------------------------------------------//
 
 METHOD Getline(aFields, lTranslate, aArray) CLASS SR_PGS
 
@@ -96,9 +98,9 @@ METHOD Getline(aFields, lTranslate, aArray) CLASS SR_PGS
    DEFAULT lTranslate TO .T.
 
    IF aArray == NIL
-      aArray := Array(len(aFields))
-   ELSEIF len(aArray) != len(aFields)
-      aSize(aArray, len(aFields))
+      aArray := Array(Len(aFields))
+   ELSEIF Len(aArray) != Len(aFields)
+      ASize(aArray, Len(aFields))
    ENDIF
 
    IF ::aCurrLine == NIL
@@ -107,25 +109,25 @@ METHOD Getline(aFields, lTranslate, aArray) CLASS SR_PGS
       RETURN aArray
    ENDIF
 
-   FOR i := 1 TO len(aArray)
+   FOR i := 1 TO Len(aArray)
       aArray[i] := ::aCurrLine[i]
    NEXT i
 
 RETURN aArray
 
-/*------------------------------------------------------------------------*/
+//-------------------------------------------------------------------------------------------------------------------//
 
 METHOD FieldGet(nField, aFields, lTranslate) CLASS SR_PGS
 
    IF ::aCurrLine == NIL
       DEFAULT lTranslate TO .T.
-      ::aCurrLine := array(LEN(aFields))
+      ::aCurrLine := Array(Len(aFields))
       PGSLINEPROCESSED(::hDbc, 4096, aFields, ::lQueryOnly, ::nSystemID, lTranslate, ::aCurrLine)
    ENDIF
 
 RETURN ::aCurrLine[nField]
 
-/*------------------------------------------------------------------------*/
+//-------------------------------------------------------------------------------------------------------------------//
 
 METHOD FetchRaw(lTranslate, aFields) CLASS SR_PGS
 
@@ -137,12 +139,13 @@ METHOD FetchRaw(lTranslate, aFields) CLASS SR_PGS
       ::nRetCode := PGSFetch(::hDbc)
       ::aCurrLine := NIL
    ELSE
-      ::RunTimeErr("", "PGSFetch - Invalid cursor state" + SR_CRLF + SR_CRLF + "Last command sent to database : " + SR_CRLF + ::cLastComm)
+      ::RunTimeErr("", "PGSFetch - Invalid cursor state" + SR_CRLF + SR_CRLF + ;
+         "Last command sent to database : " + SR_CRLF + ::cLastComm)
    ENDIF
 
 RETURN ::nRetCode
 
-/*------------------------------------------------------------------------*/
+//-------------------------------------------------------------------------------------------------------------------//
 
 METHOD FreeStatement() CLASS SR_PGS
 
@@ -153,20 +156,28 @@ METHOD FreeStatement() CLASS SR_PGS
 
 RETURN NIL
 
-/*------------------------------------------------------------------------*/
+//-------------------------------------------------------------------------------------------------------------------//
 
 METHOD IniFields(lReSelect, cTable, cCommand, lLoadCache, cWhere, cRecnoName, cDeletedName) CLASS SR_PGS
 
-   LOCAL nFields := 0
-   LOCAL nType := 0
-   LOCAL nLen := 0
-   LOCAL nNull := 0
-   LOCAL aFields := {}
-   LOCAL nDec := 0
+   LOCAL nFields //:= 0 (value not used)
+   //LOCAL nType := 0 (variable not used)
+   //LOCAL nLen := 0 (variable not used)
+   //LOCAL nNull := 0 (variable not used)
+   LOCAL aFields //:= {} (value not used)
+   //LOCAL nDec := 0 (variable not used)
    LOCAL nRet
-   LOCAL cVlr := ""
+   //LOCAL cVlr := "" (variable not used)
    LOCAL cTbl
    LOCAL cOwner := "public"
+
+   //HB_SYMBOL_UNUSED(nFields)
+   //HB_SYMBOL_UNUSED(nType)
+   //HB_SYMBOL_UNUSED(nLen)
+   //HB_SYMBOL_UNUSED(nNull)
+   //HB_SYMBOL_UNUSED(aFields)
+   //HB_SYMBOL_UNUSED(nDec)
+   //HB_SYMBOL_UNUSED(cVlr)
 
    DEFAULT lReSelect TO .T.
    DEFAULT lLoadCache TO .F.
@@ -176,9 +187,11 @@ METHOD IniFields(lReSelect, cTable, cCommand, lLoadCache, cWhere, cRecnoName, cD
 
    IF lReSelect
       IF !Empty(cCommand)
-         nRet := ::Execute(cCommand + iif(::lComments, " /* Open Workarea with custom SQL command */", ""), .F.)
+         nRet := ::Execute(cCommand + IIf(::lComments, " /* Open Workarea with custom SQL command */", ""), .F.)
       ELSE
-         nRet := ::Execute("SELECT A.* FROM " + cTable + " A " + iif(lLoadCache, cWhere + " ORDER BY A." + cRecnoName, " WHERE 1 = 0") + iif(::lComments, " /* Open Workarea */", ""), .F.)
+         nRet := ::Execute("SELECT A.* FROM " + cTable + " A " + ;
+            IIf(lLoadCache, cWhere + " ORDER BY A." + cRecnoName, " WHERE 1 = 0") + ;
+            IIf(::lComments, " /* Open Workarea */", ""), .F.)
       ENDIF
       IF nRet != SQL_SUCCESS .AND. nRet != SQL_SUCCESS_WITH_INFO
          RETURN NIL
@@ -186,21 +199,22 @@ METHOD IniFields(lReSelect, cTable, cCommand, lLoadCache, cWhere, cRecnoName, cD
    ENDIF
 
    IF PGSResultStatus(::hStmt) != SQL_SUCCESS
-      ::RunTimeErr("", "SqlNumResultCols Error" + SR_CRLF + SR_CRLF + "Last command sent to database : " + SR_CRLF + ::cLastComm)
+      ::RunTimeErr("", "SqlNumResultCols Error" + SR_CRLF + SR_CRLF + ;
+         "Last command sent to database : " + SR_CRLF + ::cLastComm)
       RETURN NIL
    ENDIF
 
    nFields := PGSCols(::hStmt)
    ::nFields := nFields
 
-   IF !Empty(cTable) .AND. empty(cCommand)
-      cTbl := lower(cTable)
+   IF !Empty(cTable) .AND. Empty(cCommand)
+      cTbl := Lower(cTable)
       IF "." $ cTbl
-         cOwner := SubStr(cTbl, 1, at(".", cTbl) - 1)
-         cTbl := SubStr(cTbl, at(".", cTbl) + 1)
+         cOwner := SubStr(cTbl, 1, At(".", cTbl) - 1)
+         cTbl := SubStr(cTbl, At(".", cTbl) + 1)
       ENDIF
-      IF left(cTbl, 1) == chr(34) // "
-         cTbl := SubStr(cTbl, 2, len(cTbl) - 2)
+      IF Left(cTbl, 1) == Chr(34) // "
+         cTbl := SubStr(cTbl, 2, Len(cTbl) - 2)
       ENDIF
       aFields := PGSTableAttr(::hDbc, cTbl, cOwner)
    ELSE
@@ -215,27 +229,27 @@ METHOD IniFields(lReSelect, cTable, cCommand, lLoadCache, cWhere, cRecnoName, cD
 
 RETURN aFields
 
-/*------------------------------------------------------------------------*/
+//-------------------------------------------------------------------------------------------------------------------//
 
 METHOD LastError() CLASS SR_PGS
 
    IF ::hStmt != NIL
-      RETURN "(" + alltrim(str(::nRetCode)) + ") " + PGSResStatus(::hDbc) + " - " + PGSErrMsg(::hDbc)
+      RETURN "(" + AllTrim(Str(::nRetCode)) + ") " + PGSResStatus(::hDbc) + " - " + PGSErrMsg(::hDbc)
    ENDIF
 
-RETURN "(" + alltrim(str(::nRetCode)) + ") " + PGSErrMsg(::hDbc)
+RETURN "(" + AllTrim(Str(::nRetCode)) + ") " + PGSErrMsg(::hDbc)
 
-/*------------------------------------------------------------------------*/
+//-------------------------------------------------------------------------------------------------------------------//
 
-METHOD ConnectRaw(cDSN, cUser, cPassword, nVersion, cOwner, nSizeMaxBuff, lTrace, ;
-   cConnect, nPrefetch, cTargetDB, nSelMeth, nEmptyMode, nDateMode, lCounter, lAutoCommit) CLASS SR_PGS
+METHOD ConnectRaw(cDSN, cUser, cPassword, nVersion, cOwner, nSizeMaxBuff, lTrace, cConnect, nPrefetch, cTargetDB, ;
+   nSelMeth, nEmptyMode, nDateMode, lCounter, lAutoCommit) CLASS SR_PGS
 
-   LOCAL hEnv := 0
-   LOCAL hDbc := 0
+   //LOCAL hEnv := 0 (variable not used)
+   LOCAL hDbc //:= 0 (value not used)
    LOCAL nret
-   LOCAL cVersion := ""
-   LOCAL cSystemVers := ""
-   LOCAL cBuff := ""
+   //LOCAL cVersion := "" (variable not used)
+   LOCAL cSystemVers //:= "" (value not used)
+   //LOCAL cBuff := "" (variable not used)
    LOCAL aRet := {}
    LOCAL aVersion
    LOCAL cmatch
@@ -244,6 +258,13 @@ METHOD ConnectRaw(cDSN, cUser, cPassword, nVersion, cOwner, nSizeMaxBuff, lTrace
    LOCAL s_reEnvVar := HB_RegexComp("(\d+\.\d+\.\d+)")
    LOCAL cString
 
+   //HB_SYMBOL_UNUSED(hEnv)
+   //HB_SYMBOL_UNUSED(hDbc)
+   //HB_SYMBOL_UNUSED(cVersion)
+   //HB_SYMBOL_UNUSED(cSystemVers)
+   //HB_SYMBOL_UNUSED(cBuff)
+
+   // parameters not used
    HB_SYMBOL_UNUSED(cDSN)
    HB_SYMBOL_UNUSED(cUser)
    HB_SYMBOL_UNUSED(cPassword)
@@ -260,10 +281,12 @@ METHOD ConnectRaw(cDSN, cUser, cPassword, nVersion, cOwner, nSizeMaxBuff, lTrace
 
    DEFAULT ::cPort TO 5432
 
-   cConnect := "host=" + ::cHost + " user=" + ::cUser + " password=" + ::cPassword + " dbname=" + ::cDTB + " port=" + str(::cPort, 6)
+   cConnect := "host=" + ::cHost + " user=" + ::cUser + " password=" + ::cPassword + " dbname=" + ::cDTB + ;
+      " port=" + Str(::cPort, 6)
 
    IF !Empty(::sslcert)
-      cConnect += " sslmode=prefer sslcert=" + ::sslcert + " sslkey=" + ::sslkey + " sslrootcert=" + ::sslrootcert + " sslcrl=" + ::sslcrl
+      cConnect += " sslmode=prefer sslcert=" + ::sslcert + " sslkey=" + ::sslkey + " sslrootcert=" + ::sslrootcert + ;
+         " sslcrl=" + ::sslcrl
    ENDIF
 
    hDbc := PGSConnect(cConnect)
@@ -271,27 +294,27 @@ METHOD ConnectRaw(cDSN, cUser, cPassword, nVersion, cOwner, nSizeMaxBuff, lTrace
 
    IF nRet != SQL_SUCCESS .AND. nRet != SQL_SUCCESS_WITH_INFO
       ::nRetCode := nRet
-      SR_MsgLogFile("Connection Error: " + alltrim(str(PGSStatus2(hDbc))) + " (see pgs.ch)")
+      SR_MsgLogFile("Connection Error: " + AllTrim(Str(PGSStatus2(hDbc))) + " (see pgs.ch)")
       RETURN Self
-   ELSE
-      ::cConnect := cConnect
-      ::hStmt := NIL
-      ::hDbc := hDbc
-      cTargetDB := "PostgreSQL Native"
-      ::exec("select version()", .T., .T., @aRet)
-      IF len(aRet) > 0
-         cSystemVers := aRet[1, 1]
-         cString := aRet[1, 1]
-         cMatch := HB_AtX(s_reEnvVar, cString, , @nStart, @nLen)
-         IF !empty(cMatch)
-            aVersion := hb_atokens(cMatch, ".")
-         ELSE
-            aVersion := hb_atokens(strtran(Upper(aRet[1, 1]), "POSTGRESQL ", ""), ".")
-         ENDIF
+   ENDIF
+
+   ::cConnect := cConnect
+   ::hStmt := NIL
+   ::hDbc := hDbc
+   cTargetDB := "PostgreSQL Native"
+   ::Exec("select version()", .T., .T., @aRet)
+   IF Len(aRet) > 0
+      cSystemVers := aRet[1, 1]
+      cString := aRet[1, 1]
+      cMatch := HB_AtX(s_reEnvVar, cString, , @nStart, @nLen)
+      IF !Empty(cMatch)
+         aVersion := hb_atokens(cMatch, ".")
       ELSE
-         cSystemVers := "??"
-         aVersion := {"6", "0"}
+         aVersion := hb_atokens(StrTran(Upper(aRet[1, 1]), "POSTGRESQL ", ""), ".")
       ENDIF
+   ELSE
+      cSystemVers := "??"
+      aVersion := {"6", "0"}
    ENDIF
 
    ::cSystemName := cTargetDB
@@ -299,8 +322,9 @@ METHOD ConnectRaw(cDSN, cUser, cPassword, nVersion, cOwner, nSizeMaxBuff, lTrace
    ::nSystemID := SYSTEMID_POSTGR
    ::cTargetDB := Upper(cTargetDB)
 
-
-   // IF !("7.3" $ cSystemVers .OR. "7.4" $ cSystemVers .OR. "8.0" $ cSystemVers .OR. "8.1" $ cSystemVers .OR. "8.2" $ cSystemVers .OR. "8.3" $ cSystemVers .OR. "8.4" $ cSystemVers .OR. "9.0" $ cSystemVers or. "9.1" $ cSystemVers)
+   // IF !("7.3" $ cSystemVers .OR. "7.4" $ cSystemVers .OR. "8.0" $ cSystemVers .OR. "8.1" $ cSystemVers .OR. ;
+   //    "8.2" $ cSystemVers .OR. "8.3" $ cSystemVers .OR. "8.4" $ cSystemVers .OR. "9.0" $ cSystemVers .OR. ;
+   //    "9.1" $ cSystemVers)
 
    IF !((Val(aversion[1]) == 7 .AND. Val(aversion[2]) >= 3) .OR. (Val(aversion[1]) >= 8))
       ::End()
@@ -312,15 +336,15 @@ METHOD ConnectRaw(cDSN, cUser, cPassword, nVersion, cOwner, nSizeMaxBuff, lTrace
       ::lPostgresql83 := (Val(aversion[1]) == 8 .AND. Val(aversion[2]) == 3)
    ENDIF
 
-   ::exec("select pg_backend_pid()", .T., .T., @aRet)
+   ::Exec("select pg_backend_pid()", .T., .T., @aRet)
 
-   IF len(aRet) > 0
-      ::uSid := val(str(aRet[1, 1], 8, 0))
+   IF Len(aRet) > 0
+      ::uSid := Val(Str(aRet[1, 1], 8, 0))
    ENDIF
 
 RETURN Self
 
-/*------------------------------------------------------------------------*/
+//-------------------------------------------------------------------------------------------------------------------//
 
 METHOD End() CLASS SR_PGS
 
@@ -337,29 +361,29 @@ METHOD End() CLASS SR_PGS
 
 RETURN NIL
 
-/*------------------------------------------------------------------------*/
+//-------------------------------------------------------------------------------------------------------------------//
 
 METHOD Commit(lNoLog) CLASS SR_PGS
 
    ::Super:Commit(lNoLog)
 
-RETURN (::nRetCode := ::exec("COMMIT;BEGIN", .F.))
+RETURN (::nRetCode := ::Exec("COMMIT;BEGIN", .F.))
 
-/*------------------------------------------------------------------------*/
+//-------------------------------------------------------------------------------------------------------------------//
 
 METHOD RollBack() CLASS SR_PGS
 
    ::Super:RollBack()
    ::nRetCode := PGSRollBack(::hDbc)
-   ::exec("BEGIN", .F.)
+   ::Exec("BEGIN", .F.)
 
 RETURN ::nRetCode
 
-/*------------------------------------------------------------------------*/
+//-------------------------------------------------------------------------------------------------------------------//
 
 METHOD ExecuteRaw(cCommand) CLASS SR_PGS
 
-   IF upper(left(ltrim(cCommand), 6)) == "SELECT"
+   IF Upper(Left(LTrim(cCommand), 6)) == "SELECT"
       ::lResultSet := .T.
    ELSE
       ::lResultSet := .F.
@@ -369,25 +393,23 @@ METHOD ExecuteRaw(cCommand) CLASS SR_PGS
 
 RETURN PGSResultStatus(::hStmt)
 
-/*------------------------------------------------------------------------*/
+//-------------------------------------------------------------------------------------------------------------------//
 
 METHOD AllocStatement() CLASS SR_PGS
 
    IF ::lSetNext
       IF ::nSetOpt == SQL_ATTR_QUERY_TIMEOUT
-/*
-         Commented 2005/02/04 - It's better to wait forever on a lock than have a corruct transaction
-         PGSExec(::hDbc, "set statement_timeout=" + str(::nSetValue * 1000))
-*/
+         // Commented 2005/02/04 - It's better to wait forever on a lock than have a corruct transaction
+         // PGSExec(::hDbc, "set statement_timeout=" + Str(::nSetValue * 1000))
       ENDIF
       ::lSetNext := .F.
    ENDIF
 
 RETURN SQL_SUCCESS
 
-/*------------------------------------------------------------------------*/
+//-------------------------------------------------------------------------------------------------------------------//
 
 METHOD GetAffectedRows()
 RETURN PGSAFFECTEDROWS(::hDbc)
 
-/*------------------------------------------------------------------------*/
+//-------------------------------------------------------------------------------------------------------------------//

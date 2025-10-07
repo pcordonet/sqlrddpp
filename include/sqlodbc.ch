@@ -1,50 +1,48 @@
-/*
-* SQLRDD PRG Header (ODBC DEFINES)
-* Copyright (c) 2003 - Marcelo Lombardo  <lombardo@uol.com.br>
-* All Rights Reserved
-*/
+//
+// SQLRDD PRG Header (ODBC DEFINES)
+// Copyright (c) 2003 - Marcelo Lombardo  <lombardo@uol.com.br>
+//
 
-/*
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2, or (at your option)
- * any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this software; see the file COPYING.  If not, write to
- * the Free Software Foundation, Inc., 59 Temple Place, Suite 330,
- * Boston, MA 02111-1307 USA (or visit the web site http://www.gnu.org/).
- *
- * As a special exception, the xHarbour Project gives permission for
- * additional uses of the text contained in its release of xHarbour.
- *
- * The exception is that, if you link the xHarbour libraries with other
- * files to produce an executable, this does not by itself cause the
- * resulting executable to be covered by the GNU General Public License.
- * Your use of that executable is in no way restricted on account of
- * linking the xHarbour library code into it.
- *
- * This exception does not however invalidate any other reasons why
- * the executable file might be covered by the GNU General Public License.
- *
- * This exception applies only to the code released by the xHarbour
- * Project under the name xHarbour.  If you copy code from other
- * xHarbour Project or Free Software Foundation releases into a copy of
- * xHarbour, as the General Public License permits, the exception does
- * not apply to the code that you add in this way.  To avoid misleading
- * anyone as to the status of such modified files, you must delete
- * this exception notice from them.
- *
- * If you write modifications of your own for xHarbour, it is your choice
- * whether to permit this exception to apply to your modifications.
- * If you do not wish that, delete this exception notice.
- *
- */
+// $BEGIN_LICENSE$
+// This program is free software; you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation; either version 2, or (at your option)
+// any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this software; see the file COPYING.  If not, write to
+// the Free Software Foundation, Inc., 59 Temple Place, Suite 330,
+// Boston, MA 02111-1307 USA (or visit the web site http://www.gnu.org/).
+//
+// As a special exception, the xHarbour Project gives permission for
+// additional uses of the text contained in its release of xHarbour.
+//
+// The exception is that, if you link the xHarbour libraries with other
+// files to produce an executable, this does not by itself cause the
+// resulting executable to be covered by the GNU General Public License.
+// Your use of that executable is in no way restricted on account of
+// linking the xHarbour library code into it.
+//
+// This exception does not however invalidate any other reasons why
+// the executable file might be covered by the GNU General Public License.
+//
+// This exception applies only to the code released by the xHarbour
+// Project under the name xHarbour.  If you copy code from other
+// xHarbour Project or Free Software Foundation releases into a copy of
+// xHarbour, as the General Public License permits, the exception does
+// not apply to the code that you add in this way.  To avoid misleading
+// anyone as to the status of such modified files, you must delete
+// this exception notice from them.
+//
+// If you write modifications of your own for xHarbour, it is your choice
+// whether to permit this exception to apply to your modifications.
+// If you do not wish that, delete this exception notice.
+// $END_LICENSE$
 
 // TODO: revise and remove duplicates
 
@@ -232,11 +230,11 @@
 
       #define SQL_C_DEFAULT             99
 
-      /* SQLExtendedFetch "fFetchType" values */
+      // SQLExtendedFetch "fFetchType" values
 
       #define SQL_FETCH_BOOKMARK         8
 
-      /* SQLExtendedFetch "rgfRowStatus" element values */
+      // SQLExtendedFetch "rgfRowStatus" element values
 
       #define SQL_ROW_SUCCESS          0
       #define SQL_ROW_DELETED          1
@@ -245,37 +243,37 @@
       #define SQL_ROW_ADDED            4
       #define SQL_ROW_ERROR            5
 
-      /* SQL_CONCURRENCY options */
+      // SQL_CONCURRENCY options
 
       #define SQL_CONCUR_READ_ONLY      1
-      #define SQL_CONCUR_DEFAULT         SQL_CONCUR_READ_ONLY   /* Default value */
+      #define SQL_CONCUR_DEFAULT         SQL_CONCUR_READ_ONLY   // Default value
 
-      /* SQL_CURSOR_TYPE options */
+      // SQL_CURSOR_TYPE options
 
-      #define SQL_CURSOR_TYPE_DEFAULT      SQL_CURSOR_FORWARD_ONLY   /* Default value */
+      #define SQL_CURSOR_TYPE_DEFAULT      SQL_CURSOR_FORWARD_ONLY   // Default value
 
-      /* options for SQLGetStmtOption/SQLSetStmtOption */
+      // options for SQLGetStmtOption/SQLSetStmtOption
 
       #define SQL_KEYSET_SIZE          8
       #define SQL_SIMULATE_CURSOR       10
       #define SQL_RETRIEVE_DATA         11
       #define SQL_USE_BOOKMARKS         12
-      #define SQL_GET_BOOKMARK         13   /*   GetStmtOption Only */
+      #define SQL_GET_BOOKMARK         13   //   GetStmtOption Only
       #define SQL_STMT_OPT_MAX         SQL_ROW_NUMBER
       #define SQL_STMT_OPT_MIN         SQL_QUERY_TIMEOUT
 
-      /* Operations in SQLSetPos */
+      // Operations in SQLSetPos
 
       #define SQL_UPDATE               2
       #define SQL_DELETE               3
       #define SQL_ADD                  4
 
-      /* Lock options in SQLSetPos */
+      // Lock options in SQLSetPos
 
       #define SQL_LOCK_UNLOCK          2
       //#define SQL_C_DOUBLE               8
 
-      /* identifiers of fields in the SQL descriptor */
+      // identifiers of fields in the SQL descriptor
 
       #define SQL_DESC_COUNT                  1001
       #define SQL_DESC_TYPE                   1002

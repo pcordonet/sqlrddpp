@@ -1,32 +1,32 @@
-// SQLRDD
+// SQLRDD++
 // test with Firebird 3
 // To compile:
-// hbmk2 firebird2 -lfbclient
+// hbmk2 firebird1b -lfbclient
 
 #include "sqlrdd.ch"
-#include "inkey.ch"
 
-// Make a copy of this file and change the values below.
-// NOTE: the database must exist before runnning the test.
-#define SERVER "inet://"
+// Make a copy of this file and change the values below (if necessary).
+// NOTE: the database will be created automatically.
+#define SERVER ""
 #define UID    "SYSDBA"
 #define PWD    "masterkey"
-#define DTB    "C:\PATHTODATABASE\TEST.FDB"
+#define DTB    "fb3dbtest1.fdb"
 
 REQUEST SQLRDD
-REQUEST SQLEX
 REQUEST SR_FIREBIRD3
 
 PROCEDURE Main()
 
    LOCAL nConnection
    LOCAL n
-   LOCAL oTB
-   LOCAL nKey
 
    setMode(25, 80)
 
    rddSetDefault("SQLRDD")
+
+   IF !file(DTB)
+      fbcreatedb3(DTB, UID, PWD, NIL, NIL, NIL)
+   ENDIF
 
    nConnection := sr_AddConnection(CONNECT_FIREBIRD3, "FIREBIRD=" + SERVER + ";UID=" + UID + ";PWD=" + PWD + ";DTB=" + DTB)
 
@@ -34,7 +34,7 @@ PROCEDURE Main()
       alert("Connection error. See sqlerror.log for details.")
       QUIT
    ENDIF
-   
+
    sr_StartLog(nConnection)
 
    IF !sr_ExistTable("test")
@@ -64,42 +64,7 @@ PROCEDURE Main()
 
    GO TOP
 
-   oTB := TBrowseDB(0, 0, maxrow(), maxcol())
-
-   oTB:addColumn(TBColumnNew("ID", {||TEST->ID}))
-   oTB:addColumn(TBColumnNew("FIRST", {||TEST->FIRST}))
-   oTB:addColumn(TBColumnNew("LAST", {||TEST->LAST}))
-   oTB:addColumn(TBColumnNew("AGE", {||TEST->AGE}))
-   oTB:addColumn(TBColumnNew("DATE", {||TEST->DATE}))
-   oTB:addColumn(TBColumnNew("MARRIED", {||TEST->MARRIED}))
-   oTB:addColumn(TBColumnNew("VALUE", {||TEST->VALUE}))
-
-   DO WHILE nKey != K_ESC
-      dispbegin()
-      DO WHILE !oTB:stabilize()
-      ENDDO
-      dispend()
-      nKey := inkey(0)
-      SWITCH nKey
-      CASE K_UP
-         oTB:up()
-         EXIT
-      CASE K_DOWN
-         oTB:down()
-         EXIT
-      CASE K_LEFT
-         oTB:left()
-         EXIT
-      CASE K_RIGHT
-         oTB:right()
-         EXIT
-      CASE K_PGUP
-         oTB:PageUp()
-         EXIT
-      CASE K_PGDN
-         oTB:PageDown()
-      ENDSWITCH
-   ENDDO
+   browse()
 
    CLOSE DATABASE
    

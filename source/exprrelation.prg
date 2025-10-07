@@ -1,81 +1,80 @@
-/*
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2, or (at your option)
- * any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this software; see the file COPYING.  If not, write to
- * the Free Software Foundation, Inc., 59 Temple Place, Suite 330,
- * Boston, MA 02111-1307 USA (or visit the web site http://www.gnu.org/).
- *
- * As a special exception, the xHarbour Project gives permission for
- * additional uses of the text contained in its release of xHarbour.
- *
- * The exception is that, if you link the xHarbour libraries with other
- * files to produce an executable, this does not by itself cause the
- * resulting executable to be covered by the GNU General Public License.
- * Your use of that executable is in no way restricted on account of
- * linking the xHarbour library code into it.
- *
- * This exception does not however invalidate any other reasons why
- * the executable file might be covered by the GNU General Public License.
- *
- * This exception applies only to the code released by the xHarbour
- * Project under the name xHarbour.  If you copy code from other
- * xHarbour Project or Free Software Foundation releases into a copy of
- * xHarbour, as the General Public License permits, the exception does
- * not apply to the code that you add in this way.  To avoid misleading
- * anyone as to the status of such modified files, you must delete
- * this exception notice from them.
- *
- * If you write modifications of your own for xHarbour, it is your choice
- * whether to permit this exception to apply to your modifications.
- * If you do not wish that, delete this exception notice.
- *
- */
+// $BEGIN_LICENSE$
+// This program is free software; you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation; either version 2, or (at your option)
+// any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this software; see the file COPYING.  If not, write to
+// the Free Software Foundation, Inc., 59 Temple Place, Suite 330,
+// Boston, MA 02111-1307 USA (or visit the web site http://www.gnu.org/).
+//
+// As a special exception, the xHarbour Project gives permission for
+// additional uses of the text contained in its release of xHarbour.
+//
+// The exception is that, if you link the xHarbour libraries with other
+// files to produce an executable, this does not by itself cause the
+// resulting executable to be covered by the GNU General Public License.
+// Your use of that executable is in no way restricted on account of
+// linking the xHarbour library code into it.
+//
+// This exception does not however invalidate any other reasons why
+// the executable file might be covered by the GNU General Public License.
+//
+// This exception applies only to the code released by the xHarbour
+// Project under the name xHarbour.  If you copy code from other
+// xHarbour Project or Free Software Foundation releases into a copy of
+// xHarbour, as the General Public License permits, the exception does
+// not apply to the code that you add in this way.  To avoid misleading
+// anyone as to the status of such modified files, you must delete
+// this exception notice from them.
+//
+// If you write modifications of your own for xHarbour, it is your choice
+// whether to permit this exception to apply to your modifications.
+// If you do not wish that, delete this exception notice.
+// $END_LICENSE$
 
 #include "sqlrdd.ch"
-#include "hbclass.ch"
+#include <hbclass.ch>
 
 ///////////////////////////////////////////////////////////////////////////////
 
 FUNCTION NewDbSetRelation(cAlias, bRelation, cRelation, lScoped)
 
    DbSetRelation(cAlias, bRelation, cRelation, lScoped)
-   RelationManager():new():AddRelation(EnchancedRelationFactory():new(), alias(), cAlias, cRelation)
+   RelationManager():new():AddRelation(EnchancedRelationFactory():new(), Alias(), cAlias, cRelation)
 
 RETURN NIL
 
 FUNCTION NewdbClearRelation()
 
    dbClearRelation()
-   RelationManager():new():Clear(alias())
+   RelationManager():new():Clear(Alias())
 
 RETURN NIL
 
 FUNCTION Newdbclearfilter()
 
    dbclearfilter()
-   oGetWorkarea(alias()):cFilterExpression := ""
+   oGetWorkarea(Alias()):cFilterExpression := ""
 
 RETURN NIL
 
 FUNCTION oGetWorkarea(cAlias)
 
    LOCAL result
-   LOCAL oerr
+   LOCAL oErr
 
-   BEGIN SEQUENCE
+   BEGIN SEQUENCE WITH __BreakBlock()
       result := &cAlias->(dbInfo(DBI_INTERNAL_OBJECT))
    RECOVER USING oErr
       oErr:Description += " (cAlias: " + cstr(cAlias) + ")"
-      throw(oErr)
+      _SR_Throw(oErr)
    END SEQUENCE
 
 RETURN result
@@ -85,8 +84,8 @@ PROCEDURE SelectFirstAreaNotInUse()
    LOCAL nArea
 
    FOR nArea := 1 TO 65534
-      IF Empty(alias(nArea))
-         dbSelectArea(nArea)
+      IF Empty(Alias(nArea))
+         DBSelectArea(nArea)
          EXIT
       ENDIF
    NEXT
@@ -134,12 +133,12 @@ ENDCLASS
 
 METHOD new(pWorkarea1, pWorkarea2, pExpression) CLASS DirectRelation
 
-   IF HB_ISCHAR(pWorkarea1)
+   IF HB_IsChar(pWorkarea1)
       ::oWorkarea1 := oGetWorkarea(pWorkarea1)
    ELSE
       ::oWorkarea1 := pWorkarea1
    ENDIF
-   IF HB_ISCHAR(pWorkarea2)
+   IF HB_IsChar(pWorkarea2)
       ::oWorkarea2 := oGetWorkarea(pWorkarea2)
    ELSE
       ::oWorkarea2 := pWorkarea2
@@ -211,21 +210,21 @@ RETURN instance
 METHOD Clear(cAlias) CLASS RelationManager
 
    ::oInternDictionary:Clear()
-   RemoveAll(::aDirectRelations, {|y|lower(y:oWorkarea1:cAlias) == lower(cAlias)})
+   RemoveAll(::aDirectRelations, {|y|Lower(y:oWorkarea1:cAlias) == Lower(cAlias)})
 
 RETURN NIL
 
 METHOD AddRelation(oFactory, pAlias1, pAlias2, pExpression) CLASS RelationManager
 
-   LOCAL cAlias1 := upper(pAlias1)
-   LOCAL cAlias2 := upper(pAlias2)
-   LOCAL n := ascan(::aDirectRelations, {|x|upper(x:oWorkarea1:cAlias) == cAlias1 .AND. upper(x:oWorkarea2:cAlias) == cAlias2})
+   LOCAL cAlias1 := Upper(pAlias1)
+   LOCAL cAlias2 := Upper(pAlias2)
+   LOCAL n := AScan(::aDirectRelations, {|x|Upper(x:oWorkarea1:cAlias) == cAlias1 .AND. Upper(x:oWorkarea2:cAlias) == cAlias2})
    LOCAL oNewRelation := oFactory:NewDirectRelation(cAlias1, cAlias2, pExpression)
 
    IF n > 0
       ::aDirectRelations[n] := oNewRelation
    ELSE
-      aadd(::aDirectRelations, oNewRelation)
+      AAdd(::aDirectRelations, oNewRelation)
    ENDIF
    ::oInternDictionary:Clear()
 
@@ -239,20 +238,20 @@ METHOD GetRelations(cAlias1, cAlias2) CLASS RelationManager
    LOCAL oDirectRelation
    LOCAL dico2
 
-   cAlias1 := upper(cAlias1)
-   cAlias2 := upper(cAlias2)
+   cAlias1 := Upper(cAlias1)
+   cAlias2 := Upper(cAlias2)
 
    IF ::oInternDictionary:lContainsKey(cAlias1) .AND. (dico2 := ::oInternDictionary:xValue(cAlias1)):lContainsKey(cAlias2)
       result := ::oInternDictionary:xValue(cAlias1):xValue(cAlias2)
    ELSE
-      FOR i := 1 TO len(::aDirectRelations)
+      FOR i := 1 TO Len(::aDirectRelations)
          oDirectRelation := ::aDirectRelations[i]
-         IF cAlias1 == upper(oDirectRelation:oWorkarea1:cAlias)
-            IF cAlias2 == upper(oDirectRelation:oWorkarea2:cAlias)
-               aadd(result, oDirectRelation)
+         IF cAlias1 == Upper(oDirectRelation:oWorkarea1:cAlias)
+            IF cAlias2 == Upper(oDirectRelation:oWorkarea2:cAlias)
+               AAdd(result, oDirectRelation)
             ELSE
                r := IndirectRelation():new()
-               aadd(r:aDirectRelations, oDirectRelation)
+               AAdd(r:aDirectRelations, oDirectRelation)
                aAddRange(result, ::BuildRelations(r, oDirectRelation:oWorkarea2:cAlias, cAlias2))
             ENDIF
          ENDIF
@@ -276,22 +275,22 @@ METHOD BuildRelations(oIndirectRelation, cAlias1, cAlias2) CLASS RelationManager
    LOCAL j
    LOCAL oDirectRelation
 
-   cAlias1 := upper(cAlias1)
-   cAlias2 := upper(cAlias2)
+   cAlias1 := Upper(cAlias1)
+   cAlias2 := Upper(cAlias2)
 
-   FOR i := 1 TO len(::aDirectRelations)
+   FOR i := 1 TO Len(::aDirectRelations)
       oDirectRelation := ::aDirectRelations[i]
-      IF cAlias1 == upper(oDirectRelation:oWorkarea1:cAlias)
+      IF cAlias1 == Upper(oDirectRelation:oWorkarea1:cAlias)
          oDirectRelation := ::aDirectRelations[i]
          r := IndirectRelation():new()
-         FOR j := 1 TO len(oIndirectRelation:aDirectRelations)
-             aadd(r:aDirectRelations, oIndirectRelation:aDirectRelations[j])
+         FOR j := 1 TO Len(oIndirectRelation:aDirectRelations)
+             AAdd(r:aDirectRelations, oIndirectRelation:aDirectRelations[j])
          NEXT j
 
-         aadd(r:aDirectRelations, oDirectRelation)
+         AAdd(r:aDirectRelations, oDirectRelation)
 
          IF oDirectRelation:oWorkarea2:cAlias == cAlias2
-            aadd(result, r)
+            AAdd(result, r)
          ELSE
             aAddRange(result, ::BuildRelations(r, oDirectRelation:oWorkarea2:cAlias, cAlias2))
          ENDIF
@@ -344,12 +343,12 @@ ENDCLASS
 
 METHOD new(pWorkarea, pName) CLASS DbIndex
 
-   IF HB_ISCHAR(pWorkarea)
+   IF HB_IsChar(pWorkarea)
       ::oWorkarea := oGetWorkarea(pWorkarea)
    ELSE
       ::oWorkarea := pWorkarea
    ENDIF
-   ::_cName := upper(pName)
+   ::_cName := Upper(pName)
    ::_aInfos := aWhere(pWorkarea:aIndex, {|x|x[10] == ::_cName})[1]
    ::oClipperExpression := ClipperExpression():new(::oWorkarea:cAlias, ::_aInfos[4], ::lIsSynthetic)
 
@@ -371,10 +370,10 @@ METHOD aDbFields() CLASS DbIndex
       ::_aDbFields := {}
       IF ::lIsSynthetic()
          // ::oClipperExpression:nLength will evaluate the index expression which is a bit slow. It would be nice to have access to the legnth of a synthetic index.
-         aadd(::_aDbFields, DbField():new(HB_RegExAtX(".*\[(.*?)\]", ::_aInfos[1], .F.)[2, 1], "C", ::oClipperExpression:nLength)) //the way to get the name of the field that contains the synthetic index isn't very clean... We also suppose that the synthtic index has a fix length
+         AAdd(::_aDbFields, DbField():new(HB_RegExAtX(".*\[(.*?)\]", ::_aInfos[1], .F.)[2, 1], "C", ::oClipperExpression:nLength)) //the way to get the name of the field that contains the synthetic index isn't very clean... We also suppose that the synthtic index has a fix length
       ELSE
-         FOR i := 1 TO len(::_aInfos[3]) - 1 // not SR_RECNO
-            aadd(::_aDbFields, ::oWorkarea:GetFieldByName(::_aInfos[3][i][1]))
+         FOR i := 1 TO Len(::_aInfos[3]) - 1 // not SR_RECNO
+            AAdd(::_aDbFields, ::oWorkarea:GetFieldByName(::_aInfos[3][i][1]))
          NEXT i
       ENDIF
    ENDIF
@@ -452,10 +451,10 @@ CLASS ClipperExpression
    ACCESS nLength
 
    EXPORTED:
-   METHOD Evaluate()
+   METHOD Evaluate(lIgnoreRelations)
 
    EXPORTED:
-   METHOD new(pContext, pValue)
+   METHOD new(pContext, pValue, pIgnoreRelations)
 
 ENDCLASS
 
@@ -463,7 +462,7 @@ METHOD new(pContext, pValue, pIgnoreRelations) CLASS ClipperExpression
 
    ::cContext := pContext
    ::cValue := pValue
-   ::lIgnoreRelations := pcount() == 3 .AND. pIgnoreRelations
+   ::lIgnoreRelations := PCount() == 3 .AND. pIgnoreRelations
 
 RETURN SELF
 
@@ -483,30 +482,32 @@ METHOD Evaluate(lIgnoreRelations) CLASS ClipperExpression
    LOCAL oErr
 
    // can be very slow with relations...
-   nseconds := seconds()
+   nseconds := Seconds()
 
-   BEGIN SEQUENCE
-      if pcount() == 1 .AND. lIgnoreRelations
-         save_slct := select()
+   BEGIN SEQUENCE WITH __BreakBlock()
+      IF PCount() == 1 .AND. lIgnoreRelations
+         save_slct := Select()
          SelectFirstAreaNotInUse()
          USE &(oGetWorkarea(::cContext):cFileName) VIA "SQLRDD" ALIAS "AliasWithoutRelation"
          result := &(::cValue)
          CLOSE ("AliasWithoutRelation")
-         select(save_slct)
+         Select(save_slct)
       ELSE
          result := &(::cContext)->(&(::cValue))
       ENDIF
    RECOVER USING oErr
       oErr:description += ";The value unseccessfully evaluated was : " + ::cValue   + ";"
-      throw(oErr)
+      _SR_Throw(oErr)
    END SEQUENCE
+   
+   HB_SYMBOL_UNUSED(nseconds)
 
 RETURN result
 
 METHOD cType() CLASS ClipperExpression
 
    IF ::_cType == NIL
-      ::_cType := valtype(::cEvaluation())
+      ::_cType := ValType(::cEvaluation())
    ENDIF
 
 RETURN ::_cType
@@ -514,7 +515,7 @@ RETURN ::_cType
 METHOD nLength() CLASS ClipperExpression
 
    IF ::_nLength == NIL
-      ::_nLength := len(::cEvaluation())
+      ::_nLength := Len(::cEvaluation())
    ENDIF
 
 RETURN ::_nLength
@@ -563,14 +564,14 @@ FUNCTION GetIndexes(lOrdered)
    lOrdered := lOrdered == NIL .OR. lOrdered
    IF ::aIndexes == NIL
       ::aIndexes := {}
-      FOR i := 1 TO len(::aIndex)
+      FOR i := 1 TO Len(::aIndex)
          IF hb_regexLike("^\w+$", ::aIndex[i, 10])
-            aadd(::aIndexes, DbIndex():new(self, ::aIndex[i, 10]))
+            AAdd(::aIndexes, DbIndex():new(self, ::aIndex[i, 10]))
          ENDIF
       NEXT i
    ENDIF
    IF lOrdered // order can change with set order to => we could also redefine DbSetOrder() to sort aIndexes each time the order change.
-      asort(::aIndexes, {|x, y|&(::cAlias)->(OrdNumber(x:cName)) < &(::cAlias)->(OrdNumber(y:cName))})
+      ASort(::aIndexes, {|x, y|&(::cAlias)->(OrdNumber(x:cName)) < &(::cAlias)->(OrdNumber(y:cName))})
    ENDIF
 
 RETURN ::aIndexes
@@ -598,9 +599,9 @@ FUNCTION GetFields()
    LOCAL _aLengths
 
    IF ::aDbFields == NIL
-      save_slct := select()
-      select(::cAlias)
-      nCount := fcount()
+      save_slct := Select()
+      Select(::cAlias)
+      nCount := FCount()
       _aTypes := Array(nCount)
       _aNames := Array(nCount)
       _aLengths := Array(nCount)
@@ -609,7 +610,7 @@ FUNCTION GetFields()
       FOR i := 1 TO nCount
          ::aDbFields[i] := DbField():new(_aNames[i], _aTypes[i], _aLengths[i])
       NEXT i
-      select(save_slct)
+      Select(save_slct)
    ENDIF
 
 RETURN ::aDbFields
@@ -618,7 +619,7 @@ FUNCTION GetFieldByName(cName)
 
    LOCAL self := HB_QSelf()
 
-RETURN xFirst(::GetFields(), {|x|lower(x:cName) == lower(cName)})
+RETURN xFirst(::GetFields(), {|x|Lower(x:cName) == Lower(cName)})
 
 // should be implemented : GetTranslations() and lFixVariables
 FUNCTION NewParseForClause(cFor, lFixVariables)

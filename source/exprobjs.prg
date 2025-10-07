@@ -1,46 +1,45 @@
-/*
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2, or (at your option)
- * any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this software; see the file COPYING.  If not, write to
- * the Free Software Foundation, Inc., 59 Temple Place, Suite 330,
- * Boston, MA 02111-1307 USA (or visit the web site http://www.gnu.org/).
- *
- * As a special exception, the xHarbour Project gives permission for
- * additional uses of the text contained in its release of xHarbour.
- *
- * The exception is that, if you link the xHarbour libraries with other
- * files to produce an executable, this does not by itself cause the
- * resulting executable to be covered by the GNU General Public License.
- * Your use of that executable is in no way restricted on account of
- * linking the xHarbour library code into it.
- *
- * This exception does not however invalidate any other reasons why
- * the executable file might be covered by the GNU General Public License.
- *
- * This exception applies only to the code released by the xHarbour
- * Project under the name xHarbour.  If you copy code from other
- * xHarbour Project or Free Software Foundation releases into a copy of
- * xHarbour, as the General Public License permits, the exception does
- * not apply to the code that you add in this way.  To avoid misleading
- * anyone as to the status of such modified files, you must delete
- * this exception notice from them.
- *
- * If you write modifications of your own for xHarbour, it is your choice
- * whether to permit this exception to apply to your modifications.
- * If you do not wish that, delete this exception notice.
- *
- */
+// $BEGIN_LICENSE$
+// This program is free software; you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation; either version 2, or (at your option)
+// any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this software; see the file COPYING.  If not, write to
+// the Free Software Foundation, Inc., 59 Temple Place, Suite 330,
+// Boston, MA 02111-1307 USA (or visit the web site http://www.gnu.org/).
+//
+// As a special exception, the xHarbour Project gives permission for
+// additional uses of the text contained in its release of xHarbour.
+//
+// The exception is that, if you link the xHarbour libraries with other
+// files to produce an executable, this does not by itself cause the
+// resulting executable to be covered by the GNU General Public License.
+// Your use of that executable is in no way restricted on account of
+// linking the xHarbour library code into it.
+//
+// This exception does not however invalidate any other reasons why
+// the executable file might be covered by the GNU General Public License.
+//
+// This exception applies only to the code released by the xHarbour
+// Project under the name xHarbour.  If you copy code from other
+// xHarbour Project or Free Software Foundation releases into a copy of
+// xHarbour, as the General Public License permits, the exception does
+// not apply to the code that you add in this way.  To avoid misleading
+// anyone as to the status of such modified files, you must delete
+// this exception notice from them.
+//
+// If you write modifications of your own for xHarbour, it is your choice
+// whether to permit this exception to apply to your modifications.
+// If you do not wish that, delete this exception notice.
+// $END_LICENSE$
 
-#include "hbclass.ch"
+#include <hbclass.ch>
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -261,7 +260,7 @@ ENDCLASS
 METHOD new(pContext, pClipperString) CLASS ExpressionBase
 
    ::oClipperExpression := ClipperExpression():new(pContext, pClipperString)
-   ::cContext := upper(pContext)
+   ::cContext := Upper(pContext)
 
 RETURN SELF
 
@@ -318,7 +317,7 @@ CLASS BooleanExpression FROM ConditionBase
    DATA oExpression
 
    EXPORTED:
-   ACCESS Value INLINE iif(::lDenied_, iif(upper(::oExpression:Value) == ".T.", ".F.", ".T."), ::oExpression:Value)
+   ACCESS Value INLINE IIf(::lDenied_, IIf(Upper(::oExpression:Value) == ".T.", ".F.", ".T."), ::oExpression:Value)
 
    EXPORTED:
    ACCESS lDenied
@@ -377,7 +376,7 @@ ENDCLASS
 
 METHOD new2(pContext, pClipperString, pDenied, pOperand1, pOperator, pOperand2) CLASS ComposedConditionBase
 
-   ::lDenied_ = pDenied
+   ::lDenied_ := pDenied
 
 RETURN ::new(pContext, pClipperString, /*pExpr,*/ pOperand1, pOperator, pOperand2)
 
@@ -441,11 +440,11 @@ ENDCLASS
 
 METHOD new(pContext, pValue) CLASS ValueExpression
 
-   ::super:new(pContext, alltrim(pValue))
+   ::super:new(pContext, AllTrim(pValue))
 
-   IF aScan(::oWorkArea:aNames, {|x|x == upper(pValue)}) > 0
+   IF AScan(::oWorkArea:aNames, {|x|x == Upper(pValue)}) > 0
       ::ValueType := "field"
-   ELSEIF hb_regexLike("\w+", pValue) .AND. hb_regexLike("\d+", !pValue) .AND. !lower(pValue) == "nil"
+   ELSEIF hb_regexLike("\w+", pValue) .AND. hb_regexLike("\d+", !pValue) .AND. !Lower(pValue) == "nil"
       ::ValueType := "variable"
    ELSE
       ::ValueType := "value"
@@ -473,12 +472,12 @@ METHOD GetType() CLASS ValueExpression
             ::cType := "N"
          ELSEIF hb_regexLike("'.*'", ::Value)
             ::cType := "C"
-         ELSEIF ascan({".T.", ".F."}, upper(::Value)) > 0
+         ELSEIF AScan({".T.", ".F."}, Upper(::Value)) > 0
             ::cType := "L"
          ENDIF
          EXIT
       OTHERWISE
-         ::cType = "U"
+         ::cType := "U"
       ENDSWITCH
    ENDIF
 
@@ -500,7 +499,7 @@ ENDCLASS
 METHOD new(pContext, pClipperString, pFunctionName, aParameters) CLASS FunctionExpression
 
    ::super:new(pContext, pClipperString)
-   ::cFunctionName := lower(pFunctionName)
+   ::cFunctionName := Lower(pFunctionName)
    ::aParameters := aParameters
 
 RETURN SELF
@@ -560,7 +559,7 @@ METHOD GetType() CLASS ComposedExpression
 
    IF ::cType == NIL
       cOperand1Type := ::oOperand1:GetType()
-      IF ascan({"plus", "minus"}, ::oOperator:cName) > 0 .AND. cOperand1Type == "N" // date + numeric
+      IF AScan({"plus", "minus"}, ::oOperator:cName) > 0 .AND. cOperand1Type == "N" // date + numeric
          ::cType := ::oOperand2:GetType()
       ELSE
          ::cType := cOperand1Type
@@ -591,7 +590,7 @@ PROCEDURE Visualize(oExpression) // for debuging
       alert(oExpression:Value)
    ELSEIF oExpression:isKindOf("FunctionExpression")
       alert(oExpression:cFunctionName)
-      alert(cstr(len(oExpression:aParameters)) + " parameter(s) :")
+      alert(cstr(Len(oExpression:aParameters)) + " parameter(s) :")
       FOR EACH item IN oExpression:aParameters
          Visualize(item:oExpression)
       NEXT
@@ -603,7 +602,7 @@ FUNCTION CollectAliases(oExpression, aAliases)
 
    LOCAL item
 
-   aAddDistinct(aAliases, oExpression:cContext, {|x|lower(x)})
+   aAddDistinct(aAliases, oExpression:cContext, {|x|Lower(x)})
    IF oExpression:isKindOf("BooleanExpression")
       CollectAliases(oExpression:oExpression, aAliases)
    ELSEIF oExpression:isKindOf("Comparison") .OR. oExpression:isKindOf("ComposedCondition") .OR. oExpression:isKindOf("ComposedExpression")

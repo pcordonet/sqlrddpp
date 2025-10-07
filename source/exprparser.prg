@@ -1,46 +1,45 @@
-/*
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2, or (at your option)
- * any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this software; see the file COPYING.  If not, write to
- * the Free Software Foundation, Inc., 59 Temple Place, Suite 330,
- * Boston, MA 02111-1307 USA (or visit the web site http://www.gnu.org/).
- *
- * As a special exception, the xHarbour Project gives permission for
- * additional uses of the text contained in its release of xHarbour.
- *
- * The exception is that, if you link the xHarbour libraries with other
- * files to produce an executable, this does not by itself cause the
- * resulting executable to be covered by the GNU General Public License.
- * Your use of that executable is in no way restricted on account of
- * linking the xHarbour library code into it.
- *
- * This exception does not however invalidate any other reasons why
- * the executable file might be covered by the GNU General Public License.
- *
- * This exception applies only to the code released by the xHarbour
- * Project under the name xHarbour.  If you copy code from other
- * xHarbour Project or Free Software Foundation releases into a copy of
- * xHarbour, as the General Public License permits, the exception does
- * not apply to the code that you add in this way.  To avoid misleading
- * anyone as to the status of such modified files, you must delete
- * this exception notice from them.
- *
- * If you write modifications of your own for xHarbour, it is your choice
- * whether to permit this exception to apply to your modifications.
- * If you do not wish that, delete this exception notice.
- *
- */
+// $BEGIN_LICENSE$
+// This program is free software; you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation; either version 2, or (at your option)
+// any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this software; see the file COPYING.  If not, write to
+// the Free Software Foundation, Inc., 59 Temple Place, Suite 330,
+// Boston, MA 02111-1307 USA (or visit the web site http://www.gnu.org/).
+//
+// As a special exception, the xHarbour Project gives permission for
+// additional uses of the text contained in its release of xHarbour.
+//
+// The exception is that, if you link the xHarbour libraries with other
+// files to produce an executable, this does not by itself cause the
+// resulting executable to be covered by the GNU General Public License.
+// Your use of that executable is in no way restricted on account of
+// linking the xHarbour library code into it.
+//
+// This exception does not however invalidate any other reasons why
+// the executable file might be covered by the GNU General Public License.
+//
+// This exception applies only to the code released by the xHarbour
+// Project under the name xHarbour.  If you copy code from other
+// xHarbour Project or Free Software Foundation releases into a copy of
+// xHarbour, as the General Public License permits, the exception does
+// not apply to the code that you add in this way.  To avoid misleading
+// anyone as to the status of such modified files, you must delete
+// this exception notice from them.
+//
+// If you write modifications of your own for xHarbour, it is your choice
+// whether to permit this exception to apply to your modifications.
+// If you do not wish that, delete this exception notice.
+// $END_LICENSE$
 
-#include "hbclass.ch"
+#include <hbclass.ch>
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -59,7 +58,7 @@ CLASS ParserBase
    METHOD Parse(cExpression)
 
    PROTECTED:
-   METHOD InternParse(cExpression)
+   METHOD InternParse(cExpression, cAlias)
 
    PROTECTED:
    METHOD GetComposedExpression(cAlias, cExpression, oOperand1, oConnector, oOperand2) VIRTUAL
@@ -105,13 +104,13 @@ RETURN SELF
 METHOD SortedOperators CLASS ParserBase
 
    IF ::_SortedOperators == NIL
-      ::_SortedOperators := asort(::GetOperators(), , , {|x, y|x:nPriority < y:nPriority})
+      ::_SortedOperators := ASort(::GetOperators(), , , {|x, y|x:nPriority < y:nPriority})
    ENDIF
 
 RETURN ::_SortedOperators
 
 METHOD Parse(cExpression) CLASS ParserBase
-RETURN ::InternParse("?" + AtRepl(chr(34), cExpression, "'") + "?", ::_cDefaultContext)
+RETURN ::InternParse("?" + AtRepl(Chr(34), cExpression, "'") + "?", ::_cDefaultContext)
 
 METHOD InternParse(cExpression, cAlias) CLASS ParserBase
 
@@ -135,17 +134,17 @@ METHOD GetOperands(cExpression, cAlias, oOperand1, oConnector, oOperand2) CLASS 
    LOCAL cNewAlias
    LOCAL cRegO
 
-   cExpression := alltrim(cExpression)
+   cExpression := AllTrim(cExpression)
 
-   cAlias := iif((cNewAlias := ::ExtractAlias1(@cExpression)) != NIL, cNewAlias, cAlias)
+   cAlias := IIf((cNewAlias := ::ExtractAlias1(@cExpression)) != NIL, cNewAlias, cAlias)
 
    DO WHILE hb_regexLike("^\?(?:[^\'\?]*?(?:\'[^\']*\'))*[^\'\?]*\?$", cExpression)
-      cExpression := alltrim(substr(cExpression, 2, len(cExpression) - 2))
-      cAlias := iif((cNewAlias := ::ExtractAlias2(@cExpression)) != NIL, cNewAlias, cAlias)
+      cExpression := AllTrim(SubStr(cExpression, 2, Len(cExpression) - 2))
+      cAlias := IIf((cNewAlias := ::ExtractAlias2(@cExpression)) != NIL, cNewAlias, cAlias)
       ::ResolveParenthesis(@cExpression)
    ENDDO
 
-   FOR i := 1 TO len(::SortedOperators)
+   FOR i := 1 TO Len(::SortedOperators)
       o := ::SortedOperators[i]
       cRegO := "^((?:[^\'\?]*(?:\'[^\']*\'|\?(?:[^\'\?]*(?:\'[^\']*\'))*[^\'\?]*\?))*?[^\'\?]*?)(" + o:cPattern + ")(\s*[^>].*)$"
       IF HB_RegExMatch(cRegO, cExpression, .F.)
@@ -157,7 +156,7 @@ METHOD GetOperands(cExpression, cAlias, oOperand1, oConnector, oOperand2) CLASS 
       ENDIF
    NEXT i
 
-   cAlias := iif((cNewAlias := ::ExtractAlias3(@cExpression)) != NIL, cNewAlias, cAlias)
+   cAlias := IIf((cNewAlias := ::ExtractAlias3(@cExpression)) != NIL, cNewAlias, cAlias)
 
 RETURN NIL
 
@@ -166,7 +165,7 @@ METHOD ResolveParenthesis(cExpression) CLASS ParserBase
    LOCAL i
    LOCAL nParenthesisDeep := 0
 
-   FOR i := 1 TO len(cExpression)
+   FOR i := 1 TO Len(cExpression)
       SWITCH cExpression[i]
       CASE "'"
          DO WHILE cExpression[++i] != "'"
@@ -193,13 +192,13 @@ METHOD RestoreParenthesis(cExpression) CLASS ParserBase
    LOCAL cParenthesis := "("
    LOCAL i
 
-   FOR i := 1 TO len(cExpression)
+   FOR i := 1 TO Len(cExpression)
       IF cExpression[i] == "'"
          DO WHILE cExpression[++i] != "'"
          ENDDO
       ELSEIF cExpression[i] == "?"
          cExpression[i] := cParenthesis
-         cParenthesis := iif(cParenthesis == "(", ")", "(")
+         cParenthesis := IIf(cParenthesis == "(", ")", "(")
       ENDIF
    NEXT i
 
@@ -295,11 +294,11 @@ METHOD GetOperands(cExpression, cAlias, oOperand1, oConnector, oOperand2) CLASS 
          ::ResolveParenthesis(@cParameters)
          DO WHILE HB_RegExMatch(cRegParams, cParameters, .F.)
             aParamGroups := HB_RegExAtX(cRegParams, cParameters)
-            aadd(aParameters, ::GetParameter(aParamGroups[2, 1], cAlias))
+            AAdd(aParameters, ::GetParameter(aParamGroups[2, 1], cAlias))
             cParameters := aParamGroups[3, 1]
          ENDDO
          IF !cParameters == ""
-            aadd(aParameters, ::GetParameter(cParameters, cAlias))
+            AAdd(aParameters, ::GetParameter(cParameters, cAlias))
          ENDIF
          oOperand1 := FunctionExpression():new(cAlias, ::RestoreParenthesis(cExpression), cFunctionName, aParameters)
       ELSEIF HB_RegExMatch(cRegMacro, cExpression, .F.)
@@ -375,8 +374,8 @@ METHOD new(pWorkarea) CLASS ConditionParser
        ComparisonOperator():new("included", {"$"})               ;
       }
 
-   cOperatorsChoice := cJoin(xSelect(::aClipperComparisonOperators, {|x| x:cPattern}), "|")
-   cOperatorsChars := cPattern(CharList(cJoin(xSelectMany(::aClipperComparisonOperators, {|x| x:aSymbols}), "")))
+   cOperatorsChoice := cJoin(xSelect(::aClipperComparisonOperators, {|x|x:cPattern}), "|")
+   cOperatorsChars := cPattern(CharList(cJoin(xSelectMany(::aClipperComparisonOperators, {|x|x:aSymbols}), "")))
 
    ::_cRegOperator := ;
       HB_RegExComp("^((?:[^\'\?]*?(?:\'[^\']*\'|\?(?:[^\'\?]*?(?:\'[^\']*\'))*[^\'\?]*?\?))*(?:[^\'\?]*?[^-" + ;
@@ -417,14 +416,14 @@ METHOD GetOperands(cExpression, cAlias, oOperand1, oConnector, oOperand2) CLASS 
          oOperand1 := ::InternParse(aGroups[3, 1], cAlias)
          oOperand1:lDenied := .T.
       ELSE
-         cAlias := iif((cNewAlias := ::ExtractAlias3(@cExpression)) != NIL, cNewAlias, cAlias)
+         cAlias := IIf((cNewAlias := ::ExtractAlias3(@cExpression)) != NIL, cNewAlias, cAlias)
 
          oExpressionParser := ExpressionParser():new(cAlias)
 
          IF HB_RegExMatch(::_cRegOperator, cExpression, .F.)
             aGroups := HB_RegExAtX(::_cRegOperator, cExpression)
 
-            oComparisonOperator := xFirst(::aClipperComparisonOperators, {|y| aGroups[3, 1] $ y:aSymbols})
+            oComparisonOperator := xFirst(::aClipperComparisonOperators, {|y|aGroups[3, 1] $ y:aSymbols})
 
             oOperand1 := Comparison():new(cAlias, ;
                                           ::RestoreParenthesis(cExpression), ;
